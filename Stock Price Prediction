@@ -1,0 +1,30 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+freq_of_simulations = 100
+
+def monte_carlo_stock(s0, mean, sigma, n=252):
+    result = []
+    for _ in range (freq_of_simulations):
+        prices = [s0]
+        for _ in range(n):
+            stock_price = prices[-1] * np.exp((mean-0.5*sigma**2)+sigma*np.random.normal())
+
+            prices.append(stock_price)
+
+        result.append(prices)
+
+    simulation_data = pd.DataFrame(result)
+
+    simulation_data = simulation_data.T
+
+    simulation_data['mean'] = simulation_data.mean(axis=1)
+    print(simulation_data)
+    plt.plot(simulation_data['mean'])
+    plt.show()
+
+    print(f'Prediction for future stock price: {simulation_data['mean'].tail(1)}')
+
+if __name__ == '__main__':
+    monte_carlo_stock(50,0.0002,0.01)
